@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        gradle 'Gradlew'
+        gradle 'gradle'
     }
     environment {
         DOCKER_CREDENTIALS_ID = 'dockerhub_credentials' 

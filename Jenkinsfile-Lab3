@@ -20,7 +20,7 @@ pipeline {
                 dir("Backend") {
                     
                     sh "chmod +x gradlew || true"
-                    sh "./gradlew clean build"  // Si no tienes gradlew, usa: sh "gradle clean build"
+                    sh "gradle clean build"
                     script {
                         docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
                             sh "docker build -t victorvaraspro/tingeso-backend:latest ."

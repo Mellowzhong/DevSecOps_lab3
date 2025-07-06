@@ -100,9 +100,11 @@ pipeline {
                 dir("frontend") {
                     sh "npm install"
                     sh "npm run build"
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_credentials') {
-                        sh "docker build -t victorvaraspro/devsecops-frontend:latest ."
-                        sh "docker push victorvaraspro/devsecops-frontend:latest"
+                    script {
+                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_credentials') {
+                            sh "docker build -t victorvaraspro/devsecops-frontend:latest ."
+                            sh "docker push victorvaraspro/devsecops-frontend:latest"
+                        }
                     }
                 }
             }

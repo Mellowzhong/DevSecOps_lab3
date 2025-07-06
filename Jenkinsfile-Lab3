@@ -18,7 +18,7 @@ pipeline {
         stage("Build Backend and Push Docker image") {
             steps {
                 dir("Backend") {
-                    sh "mvn clean install -Dpmd.skip=true"
+                    sh "./gradlew clean build"
                     script {
                         docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
                             sh "docker build -t victorvaraspro/tingeso-backend:latest ."

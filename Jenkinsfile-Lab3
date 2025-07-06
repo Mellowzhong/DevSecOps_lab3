@@ -22,8 +22,11 @@ pipeline {
                     sh "chmod +x gradlew || true"
                     sh "./gradlew clean build"
                     script {
-                        sh "docker build -t victorvaraspro/devsecops-backend:latest ."
-                        sh "docker push victorvaraspro/devsecops-backend:latest"
+                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_credentials') {
+                            sh "docker build -t victorvaraspro/devsecops-backend:latest ."
+                            sh "docker push victorvaraspro/devsecops-backend:latest"
+                        }
+
                     }
                 }
             }

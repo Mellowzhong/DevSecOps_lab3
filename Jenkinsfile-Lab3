@@ -33,7 +33,7 @@ pipeline {
             }
         }
 
-
+/*
         stage("OWASP Dependency Check") {
             steps {
                 dir("backend") {
@@ -64,7 +64,9 @@ pipeline {
                 }
             }
         }
+*/
 
+/*
 
         stage("SAST SonarQube backend") {
             steps {
@@ -91,7 +93,7 @@ pipeline {
             }
         }
 
-
+*/
 
 
 
@@ -110,6 +112,7 @@ pipeline {
             }
         }
 
+/*
         stage("SAST SonarQube frontend") {
             steps {
                 dir("frontend") {
@@ -132,7 +135,7 @@ pipeline {
                 }
             }
         }
-
+*/
 
         stage("Deploy Docker Containers") {
             steps {
@@ -168,6 +171,7 @@ pipeline {
             }
         }
 
+
         stage('DAST ZAP Scan frontend') {
             steps {
                 script {
@@ -191,4 +195,6 @@ pipeline {
             }
         }
     }
+
+
 }

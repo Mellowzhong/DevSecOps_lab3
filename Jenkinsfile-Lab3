@@ -15,15 +15,14 @@ pipeline {
             }
         }
 
-
         stage("Build Backend and Push Docker image") {
             steps {
                 dir("Backend") {
-                    bat "mvn clean install -Dpmd.skip=true"
+                    sh "mvn clean install -Dpmd.skip=true"
                     script {
                         docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                            bat "docker build -t victorvaraspro/tingeso-backend:latest ."
-                            bat "docker push victorvaraspro/tingeso-backend:latest"
+                            sh "docker build -t victorvaraspro/tingeso-backend:latest ."
+                            sh "docker push victorvaraspro/tingeso-backend:latest"
                         }
                     }
                 }
@@ -33,22 +32,21 @@ pipeline {
         stage("OWASP Dependency Check") {
             steps {
                 dir("Backend") {
-                    bat """
+                    sh """
                         curl -L -o dependency-check.zip https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.4/dependency-check-7.4.4-release.zip
 
-                        REM Limpia cualquier versión previa antes de descomprimir
-                        powershell -Command "if (Test-Path 'dependency-check') { Remove-Item -Recurse -Force 'dependency-check' }"
+                        # Limpia cualquier versión previa antes de descomprimir
+                        rm -rf dependency-check
 
-                        powershell -Command "Expand-Archive -Path 'dependency-check.zip' -DestinationPath 'dependency-check'"
+                        unzip dependency-check.zip
+                        echo analyzer.assembly.enabled=false > dependency-check/dependency-check.properties
 
-                        echo analyzer.assembly.enabled=false > dependency-check.properties
-
-                        dependency-check\\dependency-check\\bin\\dependency-check.bat ^
-                            --project "tingeso-backend" ^
-                            --scan . ^
-                            --format "HTML" ^
-                            --out "dependency-report" ^
-                            --propertyfile dependency-check.properties
+                        dependency-check/bin/dependency-check.sh \
+                            --project "tingeso-backend" \
+                            --scan . \
+                            --format "HTML" \
+                            --out "dependency-report" \
+                            --propertyfile dependency-check/dependency-check.properties
                     """
                 }
             }
@@ -62,47 +60,41 @@ pipeline {
                 }
             }
         }
-        
-        
-        stage("SAST SonarQubes Backend") {
+
+        stage("SAST SonarQube Backend") {
             steps {
                 dir("Backend") {
                     withSonarQubeEnv('SonarQube') {
-                        bat "\"${tool 'sonar-scanner'}\\bin\\sonar-scanner.bat\" -Dsonar.projectKey=DevSecObs-Backend-PrestaBanco -Dsonar.sources=src -Dsonar.java.binaries=target -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
-
+                        sh "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" -Dsonar.projectKey=DevSecObs-Backend-PrestaBanco -Dsonar.sources=src -Dsonar.java.binaries=target -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
                     }
                 }
             }
         }
 
-        
-
-        stage("Build Frontend and push docker image") {
+        stage("Build Frontend and Push Docker image") {
             steps {
                 dir("Frontend") {
-                    bat "npm install"
-                    bat "npm run build"
+                    sh "npm install"
+                    sh "npm run build"
                     script {
                         docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                            bat "docker build -t victorvaraspro/tingeso-frontend:latest ."
-                            bat "docker push victorvaraspro/tingeso-frontend:latest"
+                            sh "docker build -t victorvaraspro/tingeso-frontend:latest ."
+                            sh "docker push victorvaraspro/tingeso-frontend:latest"
                         }
                     }
                 }
             }
         }
-        
-        
+
         stage("SAST SonarQube Frontend") {
             steps {
                 dir("Frontend") {
                     withSonarQubeEnv('SonarQube') {
-                        bat "\"${tool 'sonar-scanner'}\\bin\\sonar-scanner.bat\" -Dsonar.projectKey=DevSecObs-frontend-PrestaBanco -Dsonar.sources=src -Dsonar.login=%SONARQUBE_TOKEN%"
+                        sh "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" -Dsonar.projectKey=DevSecObs-frontend-PrestaBanco -Dsonar.sources=src -Dsonar.login=%SONARQUBE_TOKEN%"
                     }
                 }
             }
         }
-        
 
         stage("Deploy Docker Containers") {
             steps {
@@ -111,40 +103,39 @@ pipeline {
                         echo "Deploying Backend Container..."
 
                         // Verificar si el contenedor backend-container ya existe
-                        def backendExists = bat(script: "docker ps -a -q -f name=backend-container", returnStdout: true).trim()
+                        def backendExists = sh(script: "docker ps -a -q -f name=backend-container", returnStdout: true).trim()
                         if (backendExists) {
                             echo "Stopping and removing existing backend-container..."
-                            bat "docker stop backend-container || true"
-                            bat "docker rm backend-container || true"
+                            sh "docker stop backend-container || true"
+                            sh "docker rm backend-container || true"
                         }
 
                         // Ejecutar el contenedor del backend con variables de entorno
-                        bat "docker run -d --name backend-container -e DB_HOST=${SERVER_IP} -p 8090:8090 victorvaraspro/tingeso-backend:latest"
+                        sh "docker run -d --name backend-container -e DB_HOST=${SERVER_IP} -p 8090:8090 victorvaraspro/tingeso-backend:latest"
 
                         echo "Deploying Frontend Container..."
 
                         // Verificar si el contenedor frontend-container ya existe
-                        def frontendExists = bat(script: "docker ps -a -q -f name=frontend-container", returnStdout: true).trim()
+                        def frontendExists = sh(script: "docker ps -a -q -f name=frontend-container", returnStdout: true).trim()
                         if (frontendExists) {
                             echo "Stopping and removing existing frontend-container..."
-                            bat "docker stop frontend-container || true"
-                            bat "docker rm frontend-container || true"
+                            sh "docker stop frontend-container || true"
+                            sh "docker rm frontend-container || true"
                         }
 
                         // Ejecutar el contenedor del frontend
-                        bat "docker run -d --name frontend-container -p 5173:80 victorvaraspro/tingeso-frontend:latest"
+                        sh "docker run -d --name frontend-container -p 5173:80 victorvaraspro/tingeso-frontend:latest"
                     }
                 }
             }
         }
 
-       
         stage('DAST ZAP Scan Frontend') {
             steps {
-                script {                    
-                    bat '''
-                        echo Ejecutando ZAP para escanear el frontend en http://${SERVER_IP}:5173
-                        docker run --rm -v %cd%:/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://${SERVER_IP}:5173 -r zap-report.html || exit 0
+                script {
+                    sh '''
+                        echo "Ejecutando ZAP para escanear el frontend en http://${SERVER_IP}:5173"
+                        docker run --rm -v $(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://${SERVER_IP}:5173 -r zap-report.html || exit 0
                     '''
                 }
             }
@@ -152,7 +143,7 @@ pipeline {
 
         stage('Verificar archivos generados') {
             steps {
-                bat 'dir'
+                sh 'ls -al'
             }
         }
 

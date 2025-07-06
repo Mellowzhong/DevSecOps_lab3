@@ -15,6 +15,7 @@ pipeline {
             }
         }
 
+/*
         stage("Build backend and Push Docker image") {
             steps {
                 dir("backend") {
@@ -32,7 +33,7 @@ pipeline {
             }
         }
 
-/*
+
         stage("OWASP Dependency Check") {
             steps {
                 dir("backend") {
@@ -63,7 +64,7 @@ pipeline {
                 }
             }
         }
-*/
+
 
         stage("SAST SonarQube backend") {
             steps {
@@ -91,6 +92,7 @@ pipeline {
         }
 
 
+*/
 
 
         stage("Build frontend and Push Docker image") {

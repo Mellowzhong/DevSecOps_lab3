@@ -54,7 +54,7 @@ const login = async () => {
 const newOrder = async () => {
     console.log('Creating new order 2...');
     const DataNewOrder = {
-        "order_date": new Date().toISOString(),
+        "order_date": toSqlTimestamp(new Date()),
         "state": "Pendiente",
         "client_id": store.getters.getUserId,
         "total": 0

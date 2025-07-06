@@ -37,7 +37,7 @@ export const orderService = {
   },
 
   async postOrder(order) {
-    console.log(order);
+    console.log("order:", order);
     try {
       const response = await httpClient.post("/api/v1/orders", order);
       return response.data;

@@ -38,6 +38,7 @@ const login = async () => {
         store.commit('setUserId', response.data.user_id);
         alert('Sesión iniciada correctamente');
         try {
+            console.log('Creating new order...');
             const response = await newOrder(); // Espera a que termine
             console.log('Response new order:', response);
             router.push('/');
@@ -51,7 +52,7 @@ const login = async () => {
 };
 
 const newOrder = async () => {
-    console.log('Creating new order...');
+    console.log('Creating new order 2...');
     const DataNewOrder = {
         "order_date": new Date().toISOString(),
         "state": "Pendiente",

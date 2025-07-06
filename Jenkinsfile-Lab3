@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         DOCKER_CREDENTIALS_ID = 'dockerhub_credentials' 
-        SERVER_IP = '192.168.100.10' 
+        SERVER_IP = '20.51.127.32' 
     }
 
     stages {

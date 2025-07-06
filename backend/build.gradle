@@ -41,9 +41,11 @@ tasks.named('test') {
 }
 
 jacocoTestReport {
-    dependsOn test // Para asegurarte que 'test' se ejecuta antes
+    dependsOn test
     reports {
-        xml.required = true
-        html.required = true
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
     }
 }
+

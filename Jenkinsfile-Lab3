@@ -15,7 +15,7 @@ pipeline {
             }
         }
 
-/*
+
         stage("Build backend and Push Docker image") {
             steps {
                 dir("backend") {
@@ -92,7 +92,7 @@ pipeline {
         }
 
 
-*/
+
 
 
         stage("Build frontend and Push Docker image") {

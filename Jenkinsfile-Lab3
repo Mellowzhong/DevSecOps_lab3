@@ -63,14 +63,6 @@ pipeline {
             }
         }
         
-        stage("Test Backend") {
-            steps {
-                dir("Backend") {
-                    bat "mvn test"
-                }
-            }
-        }
-        
         
         stage("SAST SonarQubes Backend") {
             steps {

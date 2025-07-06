@@ -81,6 +81,7 @@ pipeline {
         }
 
 
+
         stage("Build frontend and Push Docker image") {
             steps {
                 dir("frontend") {

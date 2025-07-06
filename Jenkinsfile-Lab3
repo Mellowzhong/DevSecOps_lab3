@@ -37,13 +37,12 @@ pipeline {
                 dir("backend") {
                     sh """
                         curl -L -o dependency-check.zip https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.4/dependency-check-7.4.4-release.zip
-
-                        # Limpia cualquier versión previa antes de descomprimir
+        
                         rm -rf dependency-check
-
+        
                         unzip dependency-check.zip
                         echo analyzer.assembly.enabled=false > dependency-check/dependency-check.properties
-
+        
                         dependency-check/bin/dependency-check.sh \
                             --project "devsecops-backend" \
                             --scan . \
@@ -63,6 +62,7 @@ pipeline {
                 }
             }
         }
+
 
         stage("SAST SonarQube backend") {
             steps {

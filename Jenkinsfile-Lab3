@@ -22,10 +22,8 @@ pipeline {
                     sh "chmod +x gradlew || true"
                     sh "gradle clean build"
                     script {
-                        docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                            sh "docker build -t victorvaraspro/devsecops-backend:latest ."
-                            sh "docker push victorvaraspro/devsecops-backend:latest"
-                        }
+                        sh "docker build -t victorvaraspro/devsecops-backend:latest ."
+                        sh "docker push victorvaraspro/devsecops-backend:latest"
                     }
                 }
             }
@@ -79,10 +77,8 @@ pipeline {
                     sh "npm install"
                     sh "npm run build"
                     script {
-                        docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                            sh "docker build -t victorvaraspro/devsecops-frontend:latest ."
-                            sh "docker push victorvaraspro/devsecops-frontend:latest"
-                        }
+                        sh "docker build -t victorvaraspro/devsecops-frontend:latest ."
+                        sh "docker push victorvaraspro/devsecops-frontend:latest"
                     }
                 }
             }

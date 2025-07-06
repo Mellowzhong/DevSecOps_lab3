@@ -44,7 +44,7 @@ pipeline {
                         echo analyzer.assembly.enabled=false > dependency-check/dependency-check.properties
 
                         dependency-check/bin/dependency-check.sh \
-                            --project "tingeso-backend" \
+                            --project "devsecops-backend" \
                             --scan . \
                             --format "HTML" \
                             --out "dependency-report" \

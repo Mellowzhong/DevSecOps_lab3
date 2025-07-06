@@ -18,7 +18,8 @@ pipeline {
         stage("Build backend and Push Docker image") {
             steps {
                 dir("backend") {
-                    
+
+                    sh "chmod +x gradlew || true"
                     sh "./gradlew clean build"
                     script {
                         sh "docker build -t victorvaraspro/devsecops-backend:latest ."

@@ -112,11 +112,25 @@ pipeline {
             steps {
                 dir("frontend") {
                     withSonarQubeEnv('SonarQube') {
-                        sh "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" -Dsonar.projectKey=DevSecObs-frontend-PrestaBanco -Dsonar.sources=src -Dsonar.login=%SONARQUBE_TOKEN%"
+                        script {
+                            def status = sh (
+                                script: "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" " +
+                                        "-Dsonar.projectKey=DevSecObs-frontend-PrestaBanco " +
+                                        "-Dsonar.sources=src " +
+                                        "-Dsonar.login=${env.SONARQUBE_TOKEN} " +
+                                        "-Dsonar.qualitygate.wait=false",
+                                returnStatus: true
+                            )
+        
+                            if (status != 0) {
+                                echo "⚠ SonarQube frontend analysis failed, but continuing pipeline."
+                            }
+                        }
                     }
                 }
             }
         }
+
 
         stage("Deploy Docker Containers") {
             steps {

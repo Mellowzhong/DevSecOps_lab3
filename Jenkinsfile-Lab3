@@ -23,8 +23,8 @@ pipeline {
                     sh "gradle clean build"
                     script {
                         docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                            sh "docker build -t victorvaraspro/tingeso-backend:latest ."
-                            sh "docker push victorvaraspro/tingeso-backend:latest"
+                            sh "docker build -t victorvaraspro/devsecops-backend:latest ."
+                            sh "docker push victorvaraspro/devsecops-backend:latest"
                         }
                     }
                 }
@@ -80,8 +80,8 @@ pipeline {
                     sh "npm run build"
                     script {
                         docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                            sh "docker build -t victorvaraspro/tingeso-frontend:latest ."
-                            sh "docker push victorvaraspro/tingeso-frontend:latest"
+                            sh "docker build -t victorvaraspro/devsecops-frontend:latest ."
+                            sh "docker push victorvaraspro/devsecops-frontend:latest"
                         }
                     }
                 }
@@ -113,7 +113,7 @@ pipeline {
                         }
 
                         // Ejecutar el contenedor del backend con variables de entorno
-                        sh "docker run -d --name backend-container -e DB_HOST=${SERVER_IP} -p 8090:8090 victorvaraspro/tingeso-backend:latest"
+                        sh "docker run -d --name backend-container -e DB_HOST=${SERVER_IP} -p 8090:8090 victorvaraspro/devsecops-backend:latest"
 
                         echo "Deploying frontend Container..."
 
@@ -126,7 +126,7 @@ pipeline {
                         }
 
                         // Ejecutar el contenedor del frontend
-                        sh "docker run -d --name frontend-container -p 5173:80 victorvaraspro/tingeso-frontend:latest"
+                        sh "docker run -d --name frontend-container -p 5173:80 victorvaraspro/devsecops-frontend:latest"
                     }
                 }
             }

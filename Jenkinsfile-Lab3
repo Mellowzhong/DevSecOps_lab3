@@ -15,9 +15,9 @@ pipeline {
             }
         }
 
-        stage("Build Backend and Push Docker image") {
+        stage("Build backend and Push Docker image") {
             steps {
-                dir("Backend") {
+                dir("backend") {
                     
                     sh "chmod +x gradlew || true"
                     sh "gradle clean build"
@@ -33,7 +33,7 @@ pipeline {
 
         stage("OWASP Dependency Check") {
             steps {
-                dir("Backend") {
+                dir("backend") {
                     sh """
                         curl -L -o dependency-check.zip https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.4/dependency-check-7.4.4-release.zip
 
@@ -55,7 +55,7 @@ pipeline {
             post {
                 always {
                     publishHTML(target: [
-                        reportDir: 'Backend/dependency-report',
+                        reportDir: 'backend/dependency-report',
                         reportFiles: 'dependency-check-report.html',
                         reportName: 'OWASP Dependency Report'
                     ])
@@ -63,19 +63,19 @@ pipeline {
             }
         }
 
-        stage("SAST SonarQube Backend") {
+        stage("SAST SonarQube backend") {
             steps {
-                dir("Backend") {
+                dir("backend") {
                     withSonarQubeEnv('SonarQube') {
-                        sh "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" -Dsonar.projectKey=DevSecObs-Backend-PrestaBanco -Dsonar.sources=src -Dsonar.java.binaries=target -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
+                        sh "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" -Dsonar.projectKey=DevSecObs-backend-PrestaBanco -Dsonar.sources=src -Dsonar.java.binaries=target -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
                     }
                 }
             }
         }
 
-        stage("Build Frontend and Push Docker image") {
+        stage("Build frontend and Push Docker image") {
             steps {
-                dir("Frontend") {
+                dir("frontend") {
                     sh "npm install"
                     sh "npm run build"
                     script {
@@ -88,9 +88,9 @@ pipeline {
             }
         }
 
-        stage("SAST SonarQube Frontend") {
+        stage("SAST SonarQube frontend") {
             steps {
-                dir("Frontend") {
+                dir("frontend") {
                     withSonarQubeEnv('SonarQube') {
                         sh "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" -Dsonar.projectKey=DevSecObs-frontend-PrestaBanco -Dsonar.sources=src -Dsonar.login=%SONARQUBE_TOKEN%"
                     }
@@ -102,7 +102,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                        echo "Deploying Backend Container..."
+                        echo "Deploying backend Container..."
 
                         // Verificar si el contenedor backend-container ya existe
                         def backendExists = sh(script: "docker ps -a -q -f name=backend-container", returnStdout: true).trim()
@@ -115,7 +115,7 @@ pipeline {
                         // Ejecutar el contenedor del backend con variables de entorno
                         sh "docker run -d --name backend-container -e DB_HOST=${SERVER_IP} -p 8090:8090 victorvaraspro/tingeso-backend:latest"
 
-                        echo "Deploying Frontend Container..."
+                        echo "Deploying frontend Container..."
 
                         // Verificar si el contenedor frontend-container ya existe
                         def frontendExists = sh(script: "docker ps -a -q -f name=frontend-container", returnStdout: true).trim()
@@ -132,7 +132,7 @@ pipeline {
             }
         }
 
-        stage('DAST ZAP Scan Frontend') {
+        stage('DAST ZAP Scan frontend') {
             steps {
                 script {
                     sh '''

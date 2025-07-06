@@ -67,12 +67,18 @@ pipeline {
         stage("SAST SonarQube backend") {
             steps {
                 dir("backend") {
+                    sh "./gradlew test jacocoTestReport"
                     withSonarQubeEnv('SonarQube') {
-                        sh "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" -Dsonar.projectKey=DevSecObs-backend-PrestaBanco -Dsonar.sources=src -Dsonar.java.binaries=target -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
+                        sh "${tool 'sonar-scanner'}/bin/sonar-scanner " +
+                           "-Dsonar.projectKey=DevSecObs-backend-PrestaBanco " +
+                           "-Dsonar.sources=src " +
+                           "-Dsonar.java.binaries=build " +
+                           "-Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml"
                     }
                 }
             }
         }
+
 
         stage("Build frontend and Push Docker image") {
             steps {

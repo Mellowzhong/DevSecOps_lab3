@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/log")
+@RequestMapping("/api/v1/log")
 public class LogController {
 
     private final LogService logService;

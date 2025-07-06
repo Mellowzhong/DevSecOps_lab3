@@ -60,7 +60,7 @@ const newOrder = async () => {
         "total": 0
     }
 
-    console.log(DataNewOrder);
+    console.log("new DataNewOrder:", DataNewOrder);
     const response = await orderService.postOrder(DataNewOrder);
     console.log('Response:', response.id);
     store.commit('setOrderId', response.id);

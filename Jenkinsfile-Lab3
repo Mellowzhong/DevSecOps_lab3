@@ -174,7 +174,7 @@ pipeline {
         }
 
 
-        stage('DAST ZAP Scan frontend') {
+       stage('DAST ZAP Scan frontend') {
             steps {
                 dir('zap-report') {
                     sh """
@@ -184,18 +184,15 @@ pipeline {
                     """
                 }
             }
-        }
-        post {
-            always {
-                publishHTML(target: [
-                    reportDir: 'zap-report',
-                    reportFiles: 'zap-report.html',
-                    reportName: 'OWASP ZAP Report'
-                ])
+            post {
+                always {
+                    publishHTML(target: [
+                        reportDir: 'zap-report',
+                        reportFiles: 'zap-report.html',
+                        reportName: 'OWASP ZAP Report'
+                    ])
+                }
             }
         }
-
     }
-
-
 }

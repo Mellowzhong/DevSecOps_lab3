@@ -140,7 +140,7 @@ pipeline {
             }
         }
 
-        stage('Clair Scan backend image') {
+        stage('Clair Scan frontend image') {
             steps {
                 script {
                                 // Elimina cualquier contenedor anterior

@@ -28,7 +28,8 @@ pipeline {
                     sh 'sleep 10'
 
                     // Descargar klar (cliente para escanear imágenes con Clair)
-                    sh 'wget -nv -O klar https://github.com/optiopay/klar/releases/download/v2.4.0/klar-linux-amd64'
+                    sh 'wget -nv -O klar https://github.com/optiopay/klar/releases/download/v2.4.0/klar-2.4.0-linux-amd64
+'
                     sh 'chmod +x klar'
 
                     // Escanear la imagen Docker

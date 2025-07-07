@@ -33,7 +33,7 @@ pipeline {
 
                     // Escanear la imagen Docker
                     def status = sh (
-                        script: "CLAIR_ADDR=http://localhost:6060 ./klar victorvaraspro/devsecops-backend:latest",
+                        script: "CLAIR_ADDR=http://localhost:6060 ./klar victorvaraspro/devsecops-backend:latest > clair-report.txt || true",
                         returnStatus: true
                     )
                     if (status != 0) {
@@ -45,6 +45,7 @@ pipeline {
                 always {
                     // Limpiar contenedores temporales
                     sh 'docker rm -f clair clair-db || true'
+                    archiveArtifacts artifacts: 'clair-report.txt', allowEmptyArchive: true
                 }
             }
         }

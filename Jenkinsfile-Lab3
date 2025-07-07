@@ -181,6 +181,10 @@ pipeline {
                         echo "Ejecutando ZAP para escanear el frontend en http://${SERVER_IP}:5173"
                         docker run --rm -v \$(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable \
                             zap-baseline.py -t http://${SERVER_IP}:5173 -r zap-report.html || exit 0
+        
+                        echo "Verificando si se generó el archivo:"
+                        ls -lah
+                        cat zap-report.html || echo "Archivo zap-report.html no encontrado"
                     """
                 }
             }
@@ -189,10 +193,15 @@ pipeline {
                     publishHTML(target: [
                         reportDir: 'zap-report',
                         reportFiles: 'zap-report.html',
-                        reportName: 'OWASP ZAP Report'
+                        reportName: 'OWASP ZAP Report',
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true
                     ])
                 }
             }
         }
+
+
     }
 }

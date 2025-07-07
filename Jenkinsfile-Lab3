@@ -114,9 +114,6 @@ pipeline {
 
 
         stage("SAST SonarQube frontend") {
-            environment {
-                SONARQUBE_TOKEN = credentials('SONARQUBE_TOKEN')
-            }
             steps {
                 dir("frontend") {
                     withSonarQubeEnv('SonarQube') {
@@ -126,8 +123,7 @@ pipeline {
                                         "-Dsonar.projectKey=DevSecObs-frontend-PrestaBanco " +
                                         "-Dsonar.sources=src " +
                                         "-Dsonar.projectBaseDir=. " +
-                                        "-Dsonar.login=${SONARQUBE_TOKEN} " +
-                                        "-Dsonar.qualitygate.wait=false",
+                                        "-Dsonar.qualitygate.wait=false", // opcional, para no bloquear el pipeline
                                 returnStatus: true
                             )
         
@@ -139,6 +135,7 @@ pipeline {
                 }
             }
         }
+
 
 
 

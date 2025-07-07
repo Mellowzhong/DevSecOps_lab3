@@ -178,6 +178,10 @@ pipeline {
             steps {
                 dir('zap-report') {
                     sh """
+                        echo "Preparando permisos..."
+                        mkdir -p .
+                        chmod 777 .
+        
                         echo "Ejecutando ZAP para escanear el frontend en http://${SERVER_IP}:5173"
                         docker run --rm -v \$(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable \
                             zap-baseline.py -t http://${SERVER_IP}:5173 -r zap-report.html || exit 0

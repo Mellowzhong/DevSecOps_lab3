@@ -35,7 +35,10 @@ public class OrderService {
     }
 
     public OrderEntity createOrder(OrderEntity order) {
+        System.out.println("Antes del fetch");
         ClientEntity possibleClient = clientRepository.findById(order.getClient_id());
+        System.out.println("Despues del fetch");
+        System.out.println(possibleClient);
         int authIdClient = authService.getAuthIdClient();
         if (possibleClient == null) {
             throw new EntityNotFoundException("Client not found");

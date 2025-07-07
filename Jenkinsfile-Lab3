@@ -15,31 +15,7 @@ pipeline {
             }
         }
 
-        stage('Scan with Clair') {
-          steps {
-            script {
-              // Obtener digest
-              def digest = sh(script: "docker inspect --format='{{index .RepoDigests 0}}' victorvaraspro/devsecops-backend:latest | cut -d@ -f2", returnStdout: true).trim()
-        
-              // Enviar análisis a Clair
-              def response = sh(script: """curl -s -X POST http://localhost:6060/v1/index_report \\
-                -H 'Content-Type: application/json' \\
-                -d '{
-                  "hash": "${digest}",
-                  "registry": {
-                    "name": "docker.io",
-                    "insecure": false
-                  },
-                  "repository": "victorvaraspro/devsecops-backend",
-                  "tag": "latest"
-                }'""", returnStdout: true).trim()
-        
-              echo "Clair scan response: ${response}"
-            }
-          }
-        }
-
-
+ 
 
 
         stage("Build backend and Push Docker image") {

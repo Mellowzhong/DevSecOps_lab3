@@ -40,7 +40,10 @@ public class OrderService {
         System.out.println("Despues del fetch");
         System.out.println(possibleClient);
         int authIdClient = authService.getAuthIdClient();
-
+//        if (possibleClient == null) {
+//            throw new EntityNotFoundException("Client not found");
+//        }
+        System.out.println("Despues del fetch de auth");
         return orderRepository.save(order, authIdClient);
     }
 

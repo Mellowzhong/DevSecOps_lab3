@@ -15,6 +15,21 @@ pipeline {
             }
         }
 
+        stage('Scan with Clair') {
+          steps {
+            script {
+              def resp = sh(script: """curl -s -X POST http://localhost:6060/v1/registrations \\
+                -H 'Content-Type: application/json' \\
+                -d '{"registry":"docker.io","repository":"victorvaraspro/devsecops-backend","tag":"latest"}'""", returnStdout: true).trim()
+        
+              echo "Clair response: ${resp}"
+        
+              // No espera resultado ni hace checks extras, solo registro simple
+            }
+          }
+        }
+
+
 
         stage("Build backend and Push Docker image") {
             steps {

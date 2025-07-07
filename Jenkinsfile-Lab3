@@ -15,7 +15,37 @@ pipeline {
             }
         }
 
- 
+        stage('Clair Scan backend image') {
+            steps {
+                script {
+                    // Levantar base de datos y Clair
+                    sh 'docker run -d --name clair-db arminc/clair-db:latest'
+                    sh 'sleep 10'
+                    sh 'docker run -d --name clair --link clair-db:postgres -p 6060:6060 arminc/clair-local-scan:latest'
+                    sh 'sleep 10'
+
+                    // Descargar klar (cliente para escanear imágenes con Clair)
+                    sh 'wget -nv -O klar https://github.com/optiopay/klar/releases/download/v2.4.0/klar-linux-amd64'
+                    sh 'chmod +x klar'
+
+                    // Escanear la imagen Docker
+                    def status = sh (
+                        script: "CLAIR_ADDR=http://localhost:6060 ./klar victorvaraspro/devsecops-backend:latest",
+                        returnStatus: true
+                    )
+                    if (status != 0) {
+                        error "La imagen Docker tiene vulnerabilidades críticas."
+                    }
+                }
+            }
+            post {
+                always {
+                    // Limpiar contenedores temporales
+                    sh 'docker rm -f clair clair-db || true'
+                }
+            }
+        }
+
 
 
         stage("Build backend and Push Docker image") {

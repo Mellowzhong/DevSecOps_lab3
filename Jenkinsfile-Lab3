@@ -176,26 +176,25 @@ pipeline {
 
         stage('DAST ZAP Scan frontend') {
             steps {
-                script {
-                    sh '''
+                dir('zap-report') {
+                    sh """
                         echo "Ejecutando ZAP para escanear el frontend en http://${SERVER_IP}:5173"
-                        docker run --rm -v $(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://${SERVER_IP}:5173 -r zap-report.html || exit 0
-                    '''
+                        docker run --rm -v \$(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable \
+                            zap-baseline.py -t http://${SERVER_IP}:5173 -r zap-report.html || exit 0
+                    """
                 }
             }
         }
-
-        stage('Verificar archivos generados') {
-            steps {
-                sh 'ls -al'
+        post {
+            always {
+                publishHTML(target: [
+                    reportDir: 'zap-report',
+                    reportFiles: 'zap-report.html',
+                    reportName: 'OWASP ZAP Report'
+                ])
             }
         }
 
-        stage('Archivar reporte ZAP') {
-            steps {
-                archiveArtifacts artifacts: 'zap-report.html', allowEmptyArchive: true
-            }
-        }
     }
 
 

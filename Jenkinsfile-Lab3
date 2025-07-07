@@ -18,6 +18,9 @@ pipeline {
         stage('Clair Scan backend image') {
             steps {
                 script {
+                                // Elimina cualquier contenedor anterior
+                    sh 'docker rm -f clair || true'
+                    sh 'docker rm -f clair-db || true'
                     // Levantar base de datos y Clair
                     sh 'docker run -d --name clair-db arminc/clair-db:latest'
                     sh 'sleep 10'

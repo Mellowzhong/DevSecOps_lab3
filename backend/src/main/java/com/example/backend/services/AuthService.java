@@ -89,6 +89,7 @@ public class AuthService {
         System.out.println("Auth: " + authentication);
         if (authentication != null && authentication.isAuthenticated()) {
             String email = authentication.getName();
+            System.out.println("Email: " + email);
             ClientEntity clientEntity = clientRepository.findByEmail(email);
             System.out.println("Client: " + clientEntity);
             if (clientEntity == null) {

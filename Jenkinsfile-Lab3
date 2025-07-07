@@ -33,7 +33,7 @@ pipeline {
             }
         }
 
-/*
+
         stage("OWASP Dependency Check") {
             steps {
                 dir("backend") {
@@ -65,9 +65,9 @@ pipeline {
             }
         }
 
-*/
 
-/*
+
+
         stage("SAST SonarQube backend") {
             steps {
                 dir("backend") {
@@ -76,7 +76,7 @@ pipeline {
                         script {
                             def status = sh (
                                 script: "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" " +
-                                        "-Dsonar.projectKey=DevSecObs-backend-PrestaBanco " +
+                                        "-Dsonar.projectKey=DevSecObs-lab3-backend " +
                                         "-Dsonar.sources=src " +
                                         "-Dsonar.java.binaries=build/classes/java/main " +
                                         "-Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml " +
@@ -93,7 +93,7 @@ pipeline {
             }
         }
 
-*/
+
 
 
 
@@ -120,7 +120,7 @@ pipeline {
                         script {
                             def status = sh (
                                 script: "\"${tool 'sonar-scanner'}/bin/sonar-scanner\" " +
-                                        "-Dsonar.projectKey=DevSecObs-frontend-PrestaBanco " +
+                                        "-Dsonar.projectKey=DevSecObs-lab3-frontend " +
                                         "-Dsonar.sources=src " +
                                         "-Dsonar.projectBaseDir=. " +
                                         "-Dsonar.qualitygate.wait=false", // opcional, para no bloquear el pipeline

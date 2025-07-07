@@ -39,7 +39,7 @@ export const orderService = {
   async postOrder(order) {
     console.log("order:", order);
     try {
-      const response = await httpClient.post("/api/v1/orders/", order);
+      const response = await httpClient.post("/api/v1/orders", order);
       console.log("Despues de la peticion");
       return response.data;
     } catch (error) {

@@ -110,15 +110,12 @@ const actualizarTotal = async (newOrderDetails) => {
   response_order.total =
     response_order.total + newOrderDetails.quantity * newOrderDetails.unit_price;
 
-  console.log('Response: antes de put', response_order);
   const response = await orderService.putOrder(response_order);
-  console.log('Response: despues de put', response);
 };
 
 const actualizarStock = async (product, cantidad) => {
   product.stock = product.stock - cantidad;
   const response = await productService.putProduct(product);
-  console.log('Response:', response);
 };
 </script>
 

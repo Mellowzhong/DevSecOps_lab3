@@ -64,7 +64,6 @@ const obtenerOrder = async () => {
     // Esperar todas las respuestas
     const productsResponses = await Promise.all(productRequests);
 
-    console.log('Solicitudes de productos:', productsResponses);
 
     products.value = productsResponses.map((res, index) => ({
       name: res.name || 'Nombre no disponible',

@@ -31,16 +31,13 @@ const router = useRouter();
 // Función para manejar el inicio de sesión
 const login = async () => {
     const response = await loginUser(userData.value);
-    console.log('Response login:', response);
     if (response.status === 200) {
         store.commit('setUser', response.data);
         store.commit('login');
         store.commit('setUserId', response.data.user_id);
         alert('Sesión iniciada correctamente');
         try {
-            console.log('Creating new order...');
             const response = await newOrder(); // Espera a que termine
-            console.log('Response new order:', response);
             router.push('/');
         } catch (e) {
             alert('Error al crear la orden');
@@ -52,7 +49,6 @@ const login = async () => {
 };
 
 const newOrder = async () => {
-    console.log('Creating new order 2...');
     const DataNewOrder = {
         "order_date": new Date().toISOString(),
         "state": "Pendiente",
@@ -60,11 +56,8 @@ const newOrder = async () => {
         "total": 0
     }
 
-    console.log("new DataNewOrder:", DataNewOrder);
     const response = await orderService.postOrder(DataNewOrder);
-    console.log('Response:', response.id);
     store.commit('setOrderId', response.id);
-    console.log('idOrder:', store.getters.getOrderId);
     return response;
 }
 

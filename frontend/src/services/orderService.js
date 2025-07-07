@@ -37,13 +37,10 @@ export const orderService = {
   },
 
   async postOrder(order) {
-    console.log("order:", order);
     try {
       const response = await httpClient.post("/api/v1/orders", order);
-      console.log("Despues de la peticion");
       return response.data;
     } catch (error) {
-      console.log("Error al crear orden:", error);
       throw new Error(
         error.response ? error.response.data : "Error al crear orden"
       );
@@ -51,7 +48,6 @@ export const orderService = {
   },
 
   async putOrder(order) {
-    console.log(order);
     try {
       const response = await httpClient.put(
         `/api/v1/orders/${order.id}`,

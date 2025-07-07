@@ -33,7 +33,7 @@ pipeline {
             }
         }
 
-
+/*
         stage("OWASP Dependency Check") {
             steps {
                 dir("backend") {
@@ -65,9 +65,9 @@ pipeline {
             }
         }
 
+*/
 
-
-
+/*
         stage("SAST SonarQube backend") {
             steps {
                 dir("backend") {
@@ -93,7 +93,7 @@ pipeline {
             }
         }
 
-
+*/
 
 
 

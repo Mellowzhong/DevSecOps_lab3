@@ -32,6 +32,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderEntity> postOrder(@RequestBody OrderEntity order) {
+        System.out.println("hola");
         return new ResponseEntity<>(orderService.createOrder(order), HttpStatus.CREATED);
     }
 

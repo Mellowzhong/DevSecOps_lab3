@@ -34,14 +34,17 @@ public class AuthController {
     public ResponseEntity<Map<String, Integer>> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
         LoginResponseDTO responseDTO = authService.login(loginDTO);
 
-        String cookieValue = "JWT=" + responseDTO.getToken() + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=" + (60 * 60 * 24);
-
-        response.addHeader("Set-Cookie", cookieValue);
+        Cookie cookie = new Cookie("JWT", responseDTO.getToken());
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60 * 24); // 1 día
+        response.addCookie(cookie);
 
         HashMap<String, Integer> message = new HashMap<>();
         message.put("user_id", responseDTO.getUserId());
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Boolean>> login(HttpServletResponse response){
